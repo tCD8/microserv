@@ -1,0 +1,85 @@
+---
+services:
+  grafana:
+    image: "grafana/grafana"
+    container_name: grafana
+    network_mode: bridge
+    ports:
+      - "3000:3000"
+    volumes:
+      - "/mnt/main/service/grafana:/var/lib/grafana"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+  nginx:
+    image: "nginx"
+    container_name: nginx
+    network_mode: bridge
+    ports:
+      - "80:80"
+    volumes:
+      - "/mnt/main/service/html:/usr/share/nginx/html:ro"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+  victoriametrics:
+    image: "victoriametrics/victoria-metrics"
+    container_name: victoria-metrics
+    command:
+      - "--retentionPeriod=10y"
+    network_mode: bridge
+    ports:
+      - "8428:8428"
+    volumes:
+      - "/mnt/main/service/victoria-metrics-data:/victoria-metrics-data"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+  elasticsearch:
+    image: "elasticsearch:8.15.1"
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
+      - "xpack.security.enabled=false"
+      - "xpack.ml.enabled=false"
+      - "xpack.graph.enabled=false"
+      - "xpack.watcher.enabled=false"
+    network_mode: bridge
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - "/mnt/main/service/elasticsearch/:/usr/share/elasticsearch/data/"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Vladivostok
+    volumes:
+      - /mnt/main/service/transmission:/config
+      - /mnt/main/torrents:/downloads
+      - /mnt/main/torrents:/watch
+    network_mode: bridge
+    ports:
+      - 9091:9091
+      - 55555:55555
+      - 55555:55555/udp
+    restart: unless-stopped
