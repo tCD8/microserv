@@ -1,0 +1,1 @@
+curl -XPUT "http://localhost:9200/_ilm/policy/filebeat" -H 'Content-Type: application/json' -d'{"policy":{"phases":{"hot":{"actions":{"rollover":{"max_primary_shard_size":"10gb","max_age":"5d"}}},"delete":{"min_age":"30d","actions":{"delete":{"delete_searchable_snapshot":true}}}}}}}'
