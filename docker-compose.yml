@@ -8,7 +8,7 @@ services:
       - "node.name=elasticsearch1"
       - "cluster.name=es-cluster"
       - "bootstrap.memory_lock=true"
-      - "discovery.seed_hosts=elasticsearch2,elasticsearch3"
+      - "discovery.seed_hosts=elasticsearch2:9201,elasticsearch3:9202"
       - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3"
       - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
       - "xpack.security.enabled=false"
@@ -19,9 +19,13 @@ services:
       memlock:
         soft: -1
         hard: -1
+    extra_hosts:
+      - "elasticsearch2:172.17.0.1"
+      - "elasticsearch3:172.17.0.1"
     network_mode: bridge
     ports:
       - "9200:9200"
+      - "9300:9300"
     volumes:
       - "/mnt/main/service/elasticsearch1/:/usr/share/elasticsearch/data/"
     restart: always
@@ -38,7 +42,7 @@ services:
       - "node.name=elasticsearch2"
       - "cluster.name=es-cluster"
       - "bootstrap.memory_lock=true"
-      - "discovery.seed_hosts=elasticsearch1,elasticsearch3"
+      - "discovery.seed_hosts=elasticsearch1,elasticsearch3:9202"
       - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3"
       - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
       - "xpack.security.enabled=false"
@@ -49,9 +53,13 @@ services:
       memlock:
         soft: -1
         hard: -1
+    extra_hosts:
+      - "elasticsearch1:172.17.0.1"
+      - "elasticsearch3:172.17.0.1"
     network_mode: bridge
     ports:
       - "9201:9200"
+      - "9301:9300"
     volumes:
       - "/mnt/main/service/elasticsearch2/:/usr/share/elasticsearch/data/"
     restart: always
@@ -68,7 +76,7 @@ services:
       - "node.name=elasticsearch3"
       - "cluster.name=es-cluster"
       - "bootstrap.memory_lock=true"
-      - "discovery.seed_hosts=elasticsearch1,elasticsearch2"
+      - "discovery.seed_hosts=elasticsearch1,elasticsearch2:9201"
       - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2,elasticsearch3"
       - "ES_JAVA_OPTS=-Xmx1024m -Xms1024m"
       - "xpack.security.enabled=false"
@@ -79,9 +87,13 @@ services:
       memlock:
         soft: -1
         hard: -1
+    extra_hosts:
+      - "elasticsearch1:172.17.0.1"
+      - "elasticsearch2:172.17.0.1"
     network_mode: bridge
     ports:
       - "9202:9200"
+      - "9302:9300"
     volumes:
       - "/mnt/main/service/elasticsearch3/:/usr/share/elasticsearch/data/"
     restart: always
