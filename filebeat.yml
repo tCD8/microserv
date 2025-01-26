@@ -1,0 +1,24 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+filebeat.inputs:
+  - type: netflow
+#    index: "netflow-%{+yyyy.MM.dd}"
+    index: "netflow"
+
+#  - type: syslog
+#    index: "syslog-%{+yyyy.MM.dd}"
+#    protocol.udp:
+#      host: "0.0.0.0:514"
+
+output.elasticsearch:
+  hosts: ["172.17.0.1:9200"]
+
+setup.ilm.enabled: true
+setup.ilm.policy_name: "netflow"
+setup.ilm.rollover_alias: "netflow"
+setup.template.enabled: true
+setup.template.name: "netflow"
+setup.template.pattern: "netflow*"
+setup.template.overwrite: true
