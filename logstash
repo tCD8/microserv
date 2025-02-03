@@ -1,0 +1,41 @@
+http://192.168.254.200:9200/_all/_stats?level=shards&pretty
+http://192.168.254.200:9200/_cluster/health?level=indices&pretty
+http://192.168.254.200:9200/_cluster/state?pretty
+http://192.168.254.200:9200/_search?pretty=true
+http://192.168.254.200:9200/_count?pretty=true
+http://192.168.254.200:9200/_cluster/health?pretty
+http://192.168.254.200:9200/_cat/indices?v
+http://192.168.254.200:9200/_data_stream
+http://192.168.254.200:9200/_cat/shards?v
+http://192.168.254.200:9200/_nodes/stats/fs?pretty
+http://192.168.254.200:9200/_cluster/stats?pretty
+http://192.168.254.200:9200/_ilm/policy?pretty
+http://192.168.254.200:9200/_cluster/stats?human&filter_path=indices.mappings.total_deduplicated_mapping_size*
+http://192.168.254.200:9200/.ds-filebeat-8.6.2-2023.02.28-000001/_ilm/explain?pretty
+http://192.168.254.200:9200/_nodes/hot_threads?ignore_idle_threads=true&interval=30s&threads=10
+
+curl -XDELETE "http://localhost:9200/.ds-filebeat-8.6.2-2023.02.28-000001?pretty"
+curl -XDELETE "http://localhost:9200/*"
+curl -XDELETE http://localhost:9200/ecommerce/product/1001
+curl -X DELETE "http://192.168.254.200:9200/_ilm/policy/365-days@lifecycle?pretty"
+curl -X DELETE "http://192.168.254.200:9200/_data_stream/filebeat-8.6.2?pretty"
+curl -X DELETE "http://192.168.254.200:9200/_index_template/filebeat-8.6.2?pretty"
+
+curl -X POST "localhost:9200/filebeat-8.15.1/_rollover?pretty"
+curl -X DELETE "localhost:9200/.ds-filebeat-8.15.1-2025.01.25-000001?pretty"
+
+curl -XPOST "http://localhost:9200/_shrink/.ds-filebeat-8.6.2-2023.02.28-000001"
+curl -X POST "localhost:9200/.ds-exceptions-2023.06.28-000002/_close"
+curl -XPUT "http://localhost:9200/_ilm/policy/filebeat" -H 'Content-Type: application/json' -d'{"policy":{"phases":{"hot":{"actions":{"rollover":{"max_primary_shard_size":"10gb","max_age":"5d"}}}}}}'
+curl -XPUT "http://localhost:9200/_ilm/policy/filebeat" -H 'Content-Type: application/json' -d'{"policy":{"phases":{"hot":{"actions":{"rollover":{"max_primary_shard_size":"10gb","max_age":"5d"}}},"delete":{"min_age":"30d","actions":{"delete":{"delete_searchable_snapshot":true}}}}}}}'
+curl -X[HTTP method] [node address]:[port]/[index name]/[type name]/[ID]
+curl -XPUT http://localhost:9200/ecommerce
+
+curl -XPOST http://localhost:9200/.ds-filebeat-8.8.1-2023.06.15-000001/_close
+
+### Logstash
+http://192.168.254.12:9600/_node/stats/events?pretty
+http://192.168.254.12:9600/_node/stats/process?pretty
+http://192.168.254.12:9600/_node/stats/pipelines?pretty
+http://192.168.254.12:9600/_node/stats/reloads?pretty
+http://192.168.254.12:9600/_node/hot_threads?human=true&ignore_idle_threads
